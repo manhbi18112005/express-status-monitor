@@ -14,6 +14,52 @@
     "node": ">=8"
   },
   "author": "MyT <myt@nnsvn.me> (https://nnsvn.me)",
+  "contributors": [
+    {
+      "name": "Rafal Wilinski",
+      "email": "raf.wilinski@gmail.com"
+    },
+    {
+      "name": "Julien Breux",
+      "email": "julien.breux@gmail.com",
+      "url": "https://github.com/JulienBreux/"
+    },
+    {
+      "name": "Benjamin Dixon",
+      "email": "bcdixon@outlook.com",
+      "url": "http://bcdxn.tumblr.com/"
+    },
+    {
+      "name": "Colin Cummings",
+      "email": "colinrcummings@gmail.com",
+      "url": "https://github.com/colinrcummings/"
+    },
+    {
+      "name": "Ferdinand Mütsch",
+      "email": "mail@ferdinand-muetsch.de",
+      "url": "https://github.com/n1try/"
+    },
+    {
+      "name": "Mattia Richetto",
+      "email": "mattia.richetto@gmail.com",
+      "url": "https://github.com/mattiaerre"
+    },
+    {
+      "name": "Jiri Spac",
+      "email": "capajj@gmail.com",
+      "url": "https://github.com/capaj/"
+    },
+    {
+      "name": "Max Findel",
+      "email": "max@terminal.co",
+      "url": "https://github.com/maxfindel/"
+    },
+    {
+      "name": "KRAIEM Taha Yassine",
+      "email": "tahay@gmail.com",
+      "url": "https://github.com/tahayk/"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/manhbi18112005/express-status-monitor-plus.git"
@@ -44,6 +90,6 @@
   },
   "funding": {
     "type": "individual",
-    "url": "http://nnsvn.me/donate"
+    "url": "https://bot.nnsvn.me/docs/donate"
   }
 }
