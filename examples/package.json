@@ -1,19 +1,58 @@
 {
-  "name": "express-status-monitor-example",
+  "name": "express-status-monitor-plus-example",
   "version": "0.1.0",
   "description": "Examples",
   "main": "index.js",
-  "author": "Rafal Wilinski <raf.wilinski@gmail.com> (https://dynobase.com)",
+  "author": "MyT <myt@nnsvn.me> (https://nnsvn.me)",
   "contributors": [
+    {
+      "name": "Rafal Wilinski",
+      "email": "raf.wilinski@gmail.com"
+    },
     {
       "name": "Julien Breux",
       "email": "julien.breux@gmail.com",
       "url": "https://github.com/JulienBreux/"
+    },
+    {
+      "name": "Benjamin Dixon",
+      "email": "bcdixon@outlook.com",
+      "url": "http://bcdxn.tumblr.com/"
+    },
+    {
+      "name": "Colin Cummings",
+      "email": "colinrcummings@gmail.com",
+      "url": "https://github.com/colinrcummings/"
+    },
+    {
+      "name": "Ferdinand Mütsch",
+      "email": "mail@ferdinand-muetsch.de",
+      "url": "https://github.com/n1try/"
+    },
+    {
+      "name": "Mattia Richetto",
+      "email": "mattia.richetto@gmail.com",
+      "url": "https://github.com/mattiaerre"
+    },
+    {
+      "name": "Jiri Spac",
+      "email": "capajj@gmail.com",
+      "url": "https://github.com/capaj/"
+    },
+    {
+      "name": "Max Findel",
+      "email": "max@terminal.co",
+      "url": "https://github.com/maxfindel/"
+    },
+    {
+      "name": "KRAIEM Taha Yassine",
+      "email": "tahay@gmail.com",
+      "url": "https://github.com/tahayk/"
     }
   ],
   "license": "MIT",
   "dependencies": {
-    "express": "4.17.3",
+    "express": "^4.18.2",
     "express-favicon-short-circuit": "1.2.0",
     "request": "2.88.2",
     "socket.io": "^4.4.1"
@@ -24,7 +63,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RafalWilinski/express-status-monitor/tree/master/examples"
+    "url": "https://github.com/manhbi18112005/express-status-monitor-plus/tree/master/examples"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
