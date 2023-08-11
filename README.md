@@ -1,9 +1,7 @@
-# express-status-monitor
+# express-status-monitor-plus
 
-[![express-status-monitor on npm](https://img.shields.io/npm/v/express-status-monitor.svg)](https://www.npmjs.com/express-status-monitor)
-[![npm](https://img.shields.io/npm/dt/express-status-monitor.svg)](https://img.shields.io/npm/dt/express-status-monitor.svg)
-[![CircleCI](https://img.shields.io/circleci/project/github/RafalWilinski/express-status-monitor/master.svg)](https://circleci.com/gh/RafalWilinski/express-status-monitor)
-[![Open Source Helpers](https://www.codetriage.com/rafalwilinski/express-status-monitor/badges/users.svg)](https://www.codetriage.com/rafalwilinski/express-status-monitor)
+[![express-status-monitor on npm](https://img.shields.io/npm/v/express-status-monitor-plus.svg)](https://www.npmjs.com/express-status-monitor-plus)
+[![npm](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)
 
 Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers. Forked and customized by MyT.
 
@@ -16,9 +14,9 @@ Simple, self-hosted module based on Socket.io and Chart.js to report realtime se
 
 ## Installation & setup
 
-1. Run `npm install express-status-monitor --save`
+1. Run `npm install express-status-monitor-plus --save`
 2. Before any other middleware or router add following line:
-`app.use(require('express-status-monitor')());`
+`app.use(require('express-status-monitor-plus')());`
 3. Run server and go to `/status`
 
 Note: This plugin works on Node versions > 4.x
@@ -131,4 +129,4 @@ npm run coverage
 
 ## License
 
-[MIT License](https://opensource.org/licenses/MIT) © [Dynobase](https://dynobase.com)
+[MIT License](https://opensource.org/licenses/MIT)
