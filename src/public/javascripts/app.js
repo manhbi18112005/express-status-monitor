@@ -6,12 +6,12 @@
 
 'use strict';
 
-Chart.defaults.global.defaultFontSize = 8;
-Chart.defaults.global.animation.duration = 500;
-Chart.defaults.global.legend.display = false;
-Chart.defaults.global.elements.line.backgroundColor = 'rgba(0,0,0,0)';
-Chart.defaults.global.elements.line.borderColor = 'rgba(0,0,0,0.9)';
-Chart.defaults.global.elements.line.borderWidth = 2;
+
+Chart.defaults.font.size = 10;
+Chart.defaults.animation.duration = 500;
+Chart.defaults.elements.line.backgroundColor = 'rgba(0,0,0,0)';
+Chart.defaults.elements.line.borderColor = 'rgba(0,0,0,0.9)';
+Chart.defaults.elements.line.borderWidth = 2;
 
 var socket = io(location.protocol + '//' + location.hostname + ':' + (port || location.port), {
     path: socketPath,
@@ -24,37 +24,72 @@ var statusCodesColors = ['#75D701', '#47b8e0', '#ffc952', '#E53A40'];
 var defaultDataset = {
     label: '',
     data: [],
-    lineTension: 0.2,
+    borderColor: 'rgb(75, 192, 192)',
+    tension: 0.1,
+    fill: false,
     pointRadius: 0,
 };
 
 var defaultOptions = {
-    scales: {
-        yAxes: [
-            {
-                ticks: {
-                    beginAtZero: true,
-                },
-            },
-        ],
-        xAxes: [
-            {
-                type: 'time',
-                time: {
-                    unitStepSize: 30,
-                },
-                gridLines: {
-                    display: false,
-                },
-            },
-        ],
-    },
-    tooltips: {
-        enabled: false,
-    },
+    spanGaps: 1000 * 60,
     responsive: true,
-    maintainAspectRatio: false,
     animation: false,
+    interaction: {
+      mode: 'nearest',
+    },
+    plugins: {
+        legend: {
+          display: true
+        },
+        tooltip: {
+          enabled: true
+        },
+        zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
+          }
+    },
+    scales: {
+        x: {
+          type: 'time',
+          display: true,
+          title: {
+            display: true,
+            text: 'Date'
+          },
+          ticks: {
+            autoSkip: false,
+            maxRotation: 0,
+            major: {
+              enabled: true
+            },
+            // color: function(context) {
+            //   return context.tick && context.tick.major ? '#FF0000' : 'rgba(0,0,0,0.1)';
+            // },
+            font: function(context) {
+              if (context.tick && context.tick.major) {
+                return {
+                  weight: 'bold',
+                };
+              }
+            }
+          }
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: 'value'
+          }
+        }
+      }
 };
 
 var createChart = function (ctx, dataset) {
@@ -71,6 +106,7 @@ var createChart = function (ctx, dataset) {
 var addTimestamp = function (point) {
     return point.timestamp;
 };
+var heightRatio = 1.5;
 
 var cpuDataset = [Object.create(defaultDataset)];
 var memDataset = [Object.create(defaultDataset)];
@@ -89,13 +125,21 @@ var responseTimeStat = document.getElementById('responseTimeStat');
 var rpsStat = document.getElementById('rpsStat');
 
 var cpuChartCtx = document.getElementById('cpuChart');
+cpuChartCtx.height = cpuChartCtx.width * heightRatio;
 var memChartCtx = document.getElementById('memChart');
+memChartCtx.height = memChartCtx.width * heightRatio;
 var loadChartCtx = document.getElementById('loadChart');
+loadChartCtx.height = loadChartCtx.width * heightRatio;
 var heapChartCtx = document.getElementById('heapChart');
+heapChartCtx.height = heapChartCtx.width * heightRatio;
 var eventLoopChartCtx = document.getElementById('eventLoopChart');
+eventLoopChartCtx.height = eventLoopChartCtx.width * heightRatio;
 var responseTimeChartCtx = document.getElementById('responseTimeChart');
+responseTimeChartCtx.height = responseTimeChartCtx.width * heightRatio;
 var rpsChartCtx = document.getElementById('rpsChart');
+rpsChartCtx.height = rpsChartCtx.width * heightRatio;
 var statusCodesChartCtx = document.getElementById('statusCodesChart');
+statusCodesChartCtx.height = statusCodesChartCtx.width * heightRatio;
 
 var cpuChart = createChart(cpuChartCtx, cpuDataset);
 var memChart = createChart(memChartCtx, memDataset);
@@ -137,7 +181,7 @@ var onSpanChange = function (e) {
     e.target.classList.add('active');
     defaultSpan = parseInt(e.target.id, 10);
 
-    var otherSpans = document.getElementsByTagName('span');
+    var otherSpans = document.getElementsByTagName('button');
 
     for (var i = 0; i < otherSpans.length; i++) {
         if (otherSpans[i] !== e.target) otherSpans[i].classList.remove('active');
@@ -146,7 +190,10 @@ var onSpanChange = function (e) {
     socket.emit('esm_change');
 };
 
+
 socket.on('esm_start', function (data) {
+
+    document.getElementById("currenttime").textContent = new Date().toLocaleString();
     // Remove last element of Array because it contains malformed responses data.
     // To keep consistency we also remove os data.
     data[defaultSpan].responses.pop();
@@ -163,6 +210,7 @@ socket.on('esm_start', function (data) {
         return point.cpu;
     });
     cpuChart.data.labels = data[defaultSpan].os.map(addTimestamp);
+    cpuChart.data.datasets[0].label = "CPU Usage";
 
     memStat.textContent = '0.0MB';
     if (lastOsMetric) {
@@ -173,6 +221,7 @@ socket.on('esm_start', function (data) {
         return point.memory;
     });
     memChart.data.labels = data[defaultSpan].os.map(addTimestamp);
+    memChart.data.datasets[0].label = "Memory Usage";
 
     loadStat.textContent = '0.00';
     if (lastOsMetric) {
@@ -183,11 +232,13 @@ socket.on('esm_start', function (data) {
         return point.load[0];
     });
     loadChart.data.labels = data[defaultSpan].os.map(addTimestamp);
+    loadChart.data.datasets[0].label = "One Minute Load Avg";
 
     heapChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
         return point.heap.used_heap_size / 1024 / 1024;
     });
     heapChart.data.labels = data[defaultSpan].os.map(addTimestamp);
+    heapChart.data.datasets[0].label = "Heap Usage";
 
     eventLoopChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
         if (point.loop) {
@@ -196,6 +247,7 @@ socket.on('esm_start', function (data) {
         return 0;
     });
     eventLoopChart.data.labels = data[defaultSpan].os.map(addTimestamp);
+    eventLoopChart.data.datasets[0].label = "Spent in Event Loop";
 
     var lastResponseMetric = data[defaultSpan].responses[data[defaultSpan].responses.length - 1];
 
@@ -208,11 +260,13 @@ socket.on('esm_start', function (data) {
         return point.mean;
     });
     responseTimeChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
+    responseTimeChart.data.datasets[0].label = "Response Time"
 
     for (var i = 0; i < 4; i++) {
         statusCodesChart.data.datasets[i].data = data[defaultSpan].responses.map(function (point) {
             return point[i + 2];
         });
+        statusCodesChart.data.datasets[i].label = (i + 2) + "xx";
     }
     statusCodesChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
 
@@ -227,10 +281,11 @@ socket.on('esm_start', function (data) {
             return (point.count / deltaTime) * 1000;
         });
         rpsChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
+        rpsChart.data.datasets[0].label = "Requests per Second"
     }
 
-    charts.forEach(function (chart) {
-        chart.update();
+    charts.forEach(function (ch) {
+        ch.update();
     });
 
     var spanControls = document.getElementById('span-controls');
@@ -242,7 +297,7 @@ socket.on('esm_start', function (data) {
                 interval: span.interval,
             });
 
-            var spanNode = document.createElement('span');
+            var spanNode = document.createElement('button');
             var textNode = document.createTextNode((span.retention * span.interval) / 60 + 'M'); // eslint-disable-line
 
             spanNode.appendChild(textNode);
@@ -250,12 +305,13 @@ socket.on('esm_start', function (data) {
             spanNode.onclick = onSpanChange;
             spanControls.appendChild(spanNode);
         });
-        document.getElementsByTagName('span')[0].classList.add('active');
+        document.getElementsByTagName('button')[0].classList.add('active');
     }
 });
 
 socket.on('esm_stats', function (data) {
-    console.log(data);
+
+    document.getElementById("currenttime").textContent = new Date().toLocaleString();
 
     if (
         data.retention === spans[defaultSpan].retention &&
@@ -322,15 +378,15 @@ socket.on('esm_stats', function (data) {
             statusCodesChart.data.labels.push(data.responses.timestamp);
         }
 
-        charts.forEach(function (chart) {
-            if (spans[defaultSpan].retention < chart.data.labels.length) {
-                chart.data.datasets.forEach(function (dataset) {
+        charts.forEach(function (ch) {
+            if (spans[defaultSpan].retention < ch.data.labels.length) {
+                ch.data.datasets.forEach(function (dataset) {
                     dataset.data.shift();
                 });
 
-                chart.data.labels.shift();
+                ch.data.labels.shift();
             }
-            chart.update();
+            ch.update();
         });
     }
 });
