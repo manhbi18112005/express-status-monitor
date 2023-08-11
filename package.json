@@ -1,6 +1,6 @@
 {
   "name": "express-status-monitor-plus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Express-Status-Monitor+ is a modified version of express-status-monitor (made by @RafalWilinski) with additional features!",
   "main": "index.js",
   "keywords": [
