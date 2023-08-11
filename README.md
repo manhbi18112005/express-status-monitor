@@ -7,7 +7,7 @@
 
 Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers. Forked and customized by MyT.
 
-![Monitoring Page](http://i.imgur.com/AHizEWq.gif "Monitoring Page")
+![Monitoring Page](./a.gif "Monitoring Page")
 
 ## Support for other Node.js frameworks
 
