@@ -5,13 +5,9 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/RafalWilinski/express-status-monitor/master.svg)](https://circleci.com/gh/RafalWilinski/express-status-monitor)
 [![Open Source Helpers](https://www.codetriage.com/rafalwilinski/express-status-monitor/badges/users.svg)](https://www.codetriage.com/rafalwilinski/express-status-monitor)
 
-Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers.
+Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers. Forked and customized by MyT.
 
 ![Monitoring Page](http://i.imgur.com/AHizEWq.gif "Monitoring Page")
-
-## Demo
-
-[Demo available here](https://hackathon-starter.walcony.com/status)
 
 ## Support for other Node.js frameworks
 
