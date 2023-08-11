@@ -31,7 +31,6 @@ var defaultDataset = {
 };
 
 var defaultOptions = {
-    spanGaps: 1000 * 60,
     responsive: true,
     animation: false,
     interaction: {
