@@ -66,11 +66,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.0",
     "debug": "^4.3.4",
-    "handlebars": "^4.7.7",
+    "handlebars": "^4.7.8",
     "on-headers": "1.0.2",
-    "pidusage": "2.0.18",
+    "pidusage": "3.0.2",
     "socket.io": "^4.7.2"
   },
   "optionalDependencies": {
@@ -83,10 +83,10 @@
     "eslint": "eslint ."
   },
   "devDependencies": {
-    "chai": "4.3.6",
-    "eslint": "8.10.0",
-    "mocha": "9.2.1",
-    "sinon": "13.0.1"
+    "chai": "4.3.10",
+    "eslint": "8.53.0",
+    "mocha": "10.2.0",
+    "sinon": "17.0.1"
   },
   "funding": {
     "type": "individual",
