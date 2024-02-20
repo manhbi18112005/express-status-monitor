@@ -17,7 +17,7 @@ describe('on-headers-listener', () => {
       });
     });
 
-    after(() => {
+    afterEach(() => {
       clock.restore();
     });
 
@@ -31,7 +31,7 @@ describe('on-headers-listener', () => {
 
     describe('when invoked after 1 second', () => {
       it('then for span interval 1, responses length should equal 2', () => {
-        clock.tick(1000);
+        clock.tick(1010);
         onHeadersListener(500, process.hrtime(), spans);
 
         spans.forEach((span) => {
