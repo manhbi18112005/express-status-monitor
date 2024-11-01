@@ -5,7 +5,7 @@
 
 Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers. Forked and customized by MyT.
 
-![Monitoring Page](./a.gif "Monitoring Page")
+![Monitoring Page](./thumbnail.gif "Monitoring Page")
 
 ## Support for other Node.js frameworks
 
@@ -33,6 +33,7 @@ Note: This plugin works on Node versions > 4.x
 Monitor can be configured by passing options object into `expressMonitor` constructor.
 
 Default config:
+
 ```javascript
 title: 'Express Status',  // Default title
 theme: 'default.css',     // Default styles
@@ -91,7 +92,8 @@ The HTML page handler is exposed as a `pageRoute` property on the main
 middleware function.  So the middleware is mounted to intercept all requests
 while the HTML page handler will be authenticated.
 
-Example using https://www.npmjs.com/package/connect-ensure-login
+Example using <https://www.npmjs.com/package/connect-ensure-login>
+
 ```javascript
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn()
 
@@ -103,6 +105,7 @@ app.get('/status', ensureLoggedIn, statusMonitor.pageRoute)
 Credits to [@mattiaerre](https://github.com/mattiaerre)
 
 Example using [http-auth](https://www.npmjs.com/package/http-auth)
+
 ```javascript
 const auth = require('http-auth');
 const basic = auth.basic({realm: 'Monitor Area'}, function(user, pass, callback) {
@@ -122,7 +125,8 @@ If you're using socket.io in your project, this module could break your project 
 ## Tests and coverage
 
 In order to run test and coverage use the following npm commands:
-```
+
+```bash
 npm test
 npm run coverage
 ```
