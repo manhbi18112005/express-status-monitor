@@ -1,95 +1,55 @@
 {
-  "name": "express-status-monitor-plus",
-  "version": "1.0.2",
-  "description": "Express-Status-Monitor+ is a modified version of express-status-monitor (made by @RafalWilinski) with additional features!",
-  "main": "index.js",
-  "keywords": [
-    "node",
-    "status",
-    "monitoring",
-    "express",
-    "charts"
-  ],
-  "engines": {
-    "node": ">=8"
-  },
-  "author": "MyT <myt@nnsvn.me> (https://nnsvn.me)",
-  "contributors": [
-    {
-      "name": "Rafal Wilinski",
-      "email": "raf.wilinski@gmail.com"
-    },
-    {
-      "name": "Julien Breux",
-      "email": "julien.breux@gmail.com",
-      "url": "https://github.com/JulienBreux/"
-    },
-    {
-      "name": "Benjamin Dixon",
-      "email": "bcdixon@outlook.com",
-      "url": "http://bcdxn.tumblr.com/"
-    },
-    {
-      "name": "Colin Cummings",
-      "email": "colinrcummings@gmail.com",
-      "url": "https://github.com/colinrcummings/"
-    },
-    {
-      "name": "Ferdinand Mütsch",
-      "email": "mail@ferdinand-muetsch.de",
-      "url": "https://github.com/n1try/"
-    },
-    {
-      "name": "Mattia Richetto",
-      "email": "mattia.richetto@gmail.com",
-      "url": "https://github.com/mattiaerre"
-    },
-    {
-      "name": "Jiri Spac",
-      "email": "capajj@gmail.com",
-      "url": "https://github.com/capaj/"
-    },
-    {
-      "name": "Max Findel",
-      "email": "max@terminal.co",
-      "url": "https://github.com/maxfindel/"
-    },
-    {
-      "name": "KRAIEM Taha Yassine",
-      "email": "tahay@gmail.com",
-      "url": "https://github.com/tahayk/"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/manhbi18112005/express-status-monitor-plus.git"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "axios": "^1.6.0",
-    "debug": "^4.3.4",
-    "handlebars": "^4.7.8",
-    "on-headers": "1.0.2",
-    "pidusage": "3.0.2",
-    "socket.io": "^4.7.2"
-  },
-  "optionalDependencies": {
-    "event-loop-stats": "1.2.0"
-  },
-  "scripts": {
-    "test-ci": "mocha --recursive",
-    "test": "mocha --recursive --watch",
-    "example": "npm i && npm i --prefix examples && npm start --prefix examples",
-    "eslint": "eslint ."
-  },
-  "devDependencies": {
-    "chai": "4.3.10",
-    "eslint": "8.53.0",
-    "mocha": "10.2.0",
-    "sinon": "17.0.1"
-  },
-  "funding": {
-    "type": "individual",
-    "url": "https://bot.nnsvn.me/docs/donate"
-  }
+	"name": "express-status-monitor-plus",
+	"version": "2.0.0",
+	"description": "Express-Status-Monitor+ is a modified version of express-status-monitor (made by @RafalWilinski) with additional features!",
+	"main": "index.js",
+	"keywords": [
+		"node",
+		"status",
+		"monitoring",
+		"express",
+		"charts"
+	],
+	"engines": {
+		"node": ">=8"
+	},
+  "author": "Rafal Wilinski <raf.wilinski@gmail.com> (https://dynobase.com)",
+	"contributors": [
+		{
+			"name": "Le Ngo Duc Manh",
+			"email": "myt@nnsvn.me"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/manhbi18112005/express-status-monitor-plus.git"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^1.7.7",
+		"debug": "^4.3.7",
+		"handlebars": "^4.7.8",
+		"on-headers": "1.0.2",
+		"pidusage": "3.0.2",
+		"socket.io": "^4.8.1"
+	},
+	"optionalDependencies": {
+		"event-loop-stats": "1.2.0"
+	},
+	"scripts": {
+		"test-ci": "mocha --recursive",
+		"test": "mocha --recursive --watch",
+		"example": "npm i && npm i --prefix examples && npm start --prefix examples",
+		"eslint": "eslint ."
+	},
+	"devDependencies": {
+		"chai": "4.3.10",
+		"eslint": "8.53.0",
+		"mocha": "10.2.0",
+		"sinon": "17.0.1"
+	},
+	"funding": {
+		"type": "individual",
+		"url": "https://bot.nnsvn.me/docs/donate"
+	}
 }

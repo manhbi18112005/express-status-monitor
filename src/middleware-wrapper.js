@@ -23,7 +23,7 @@ const middlewareWrapper = config => {
     port: validatedConfig.port,
     socketPath: validatedConfig.socketPath,
     bodyClasses,
-    backgroundImage: validatedConfig.backgroundImage || "https://cdn.nnsvn.me/botapp/img/bg/bg.jpg",
+    backgroundImage: validatedConfig.backgroundImage || 'https://cdn.nnsvn.me/botapp/img/bg/bg.jpg',
     script: fs.readFileSync(path.join(__dirname, '/public/javascripts/app.js')),
     style: fs.readFileSync(path.join(__dirname, '/public/stylesheets/', validatedConfig.theme))
   };

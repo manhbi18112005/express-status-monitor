@@ -1,71 +1,25 @@
 {
-  "name": "express-status-monitor-plus-example",
-  "version": "0.1.0",
-  "description": "Examples",
-  "main": "index.js",
-  "author": "MyT <myt@nnsvn.me> (https://nnsvn.me)",
-  "contributors": [
-    {
-      "name": "Rafal Wilinski",
-      "email": "raf.wilinski@gmail.com"
-    },
-    {
-      "name": "Julien Breux",
-      "email": "julien.breux@gmail.com",
-      "url": "https://github.com/JulienBreux/"
-    },
-    {
-      "name": "Benjamin Dixon",
-      "email": "bcdixon@outlook.com",
-      "url": "http://bcdxn.tumblr.com/"
-    },
-    {
-      "name": "Colin Cummings",
-      "email": "colinrcummings@gmail.com",
-      "url": "https://github.com/colinrcummings/"
-    },
-    {
-      "name": "Ferdinand Mütsch",
-      "email": "mail@ferdinand-muetsch.de",
-      "url": "https://github.com/n1try/"
-    },
-    {
-      "name": "Mattia Richetto",
-      "email": "mattia.richetto@gmail.com",
-      "url": "https://github.com/mattiaerre"
-    },
-    {
-      "name": "Jiri Spac",
-      "email": "capajj@gmail.com",
-      "url": "https://github.com/capaj/"
-    },
-    {
-      "name": "Max Findel",
-      "email": "max@terminal.co",
-      "url": "https://github.com/maxfindel/"
-    },
-    {
-      "name": "KRAIEM Taha Yassine",
-      "email": "tahay@gmail.com",
-      "url": "https://github.com/tahayk/"
-    }
-  ],
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "express-favicon-short-circuit": "1.2.0",
-    "request": "2.88.2",
-    "socket.io": "^4.7.2"
-  },
-  "scripts": {
-    "start": "node index.js",
-    "benchmark": "node tester.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/manhbi18112005/express-status-monitor-plus/tree/master/examples"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  }
+	"name": "express-status-monitor-plus-example",
+	"version": "0.1.0",
+	"description": "Examples",
+	"main": "index.js",
+	"author": "MyT <myt@nnsvn.me> (https://nnsvn.me)",
+	"license": "MIT",
+	"dependencies": {
+    "axios": "1.7.7",
+		"express": "^5.0.1",
+		"express-favicon-short-circuit": "1.2.0",
+		"socket.io": "^4.8.1"
+	},
+	"scripts": {
+		"start": "node index.js",
+		"benchmark": "node tester.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/manhbi18112005/express-status-monitor-plus/tree/master/examples"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.7"
+	}
 }
