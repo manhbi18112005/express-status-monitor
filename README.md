@@ -1,9 +1,19 @@
-# express-status-monitor-plus
-
-[![express-status-monitor on npm](https://img.shields.io/npm/v/express-status-monitor-plus.svg)](https://www.npmjs.com/express-status-monitor-plus)
-[![npm](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)
-[![Publish express-status-monitor-plus](https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml)
-[![GitHub license](https://img.shields.io/github/license/manhbi18112005/express-status-monitor-plus.svg)]
+<div align="center">
+ <br />
+ <h1>
+  Express Status Monitor Plus
+ </h1>
+ <br />
+ <p>
+  <a href="https://discord.gg/nCQbSag"><img src="https://img.shields.io/discord/425670185089892362?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+  <a href="https://www.npmjs.com/package/express-status-monitor-plus"><img src="https://img.shields.io/npm/v/express-status-monitor-plus.svg?maxAge=3600" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/express-status-monitor-plus"><img src="https://img.shields.io/npm/dt/express-status-monitor-plus.svg?maxAge=3600" alt="npm downloads" /></a>
+  <a href="https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml"><img src="https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml/badge.svg" alt="Tests status" /></a>
+ </p>
+ <p>
+  <a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44"></a>
+ </p>
+</div>
 
 > [!IMPORTANT]
 > Starting with version 2.0.0, **express-status-monitor-plus** will operate as an independent fork of **express-status-monitor**, given that the original project is no longer maintained. This fork will continue to evolve, with direct updates and maintenance applied to the codebase, ensuring a commitment to new features and timely bug fixes. This allows the project to progress without impacting the original repository, providing users with an actively supported monitoring tool.
@@ -19,7 +29,7 @@ A simple, self-hosted module leveraging Socket.io and Chart.js to provide real-t
 
 ## Installation & setup
 
-1. Run `npm install express-status-monitor-plus --save`
+1. Run `npm install express-status-monitor-plus`
 2. Before any other middleware or router add following line:
 `app.use(require('express-status-monitor-plus')());`
 3. Run server and go to `/status`
