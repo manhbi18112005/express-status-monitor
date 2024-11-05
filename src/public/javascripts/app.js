@@ -1,391 +1,399 @@
-/*
-  eslint-disable no-plusplus, no-var, strict, vars-on-top, prefer-template,
-  func-names, prefer-arrow-callback, no-loop-func
-*/
-/* global Chart, location, document, port, socketPath, parseInt, io */
-
 'use strict';
 
+(() => {
+    // Constants and Configuration
+    const CONFIG = {
+        SCROLL_THROTTLE: 100,
+        CHART_HEIGHT_RATIO: 1.5,
+        STATUS_CODES_COLORS: ['#75D701', '#47b8e0', '#ffc952', '#E53A40'],
+        COMMON_CLASSES: ['bg-white', 'dark:bg-slate-800', 'shadow-lg', 'p-0', 'relative', 'rounded-lg', 'overflow-hidden', 'm-2']
+    };
 
-Chart.defaults.font.size = 10;
-Chart.defaults.animation.duration = 500;
-Chart.defaults.elements.line.backgroundColor = 'rgba(0,0,0,0)';
-Chart.defaults.elements.line.borderColor = 'rgba(0,0,0,0.9)';
-Chart.defaults.elements.line.borderWidth = 2;
-
-var socket = io(location.protocol + '//' + location.hostname + ':' + (port || location.port), {
-    path: socketPath,
-    transports: ["websocket"]
-});
-var defaultSpan = 0;
-var spans = [];
-var statusCodesColors = ['#75D701', '#47b8e0', '#ffc952', '#E53A40'];
-
-var defaultDataset = {
-    label: '',
-    data: [],
-    borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1,
-    fill: false,
-    pointRadius: 0,
-};
-
-var defaultOptions = {
-    responsive: true,
-    animation: false,
-    interaction: {
-      mode: 'nearest',
-    },
-    plugins: {
-        legend: {
-          display: true
-        },
-        tooltip: {
-          enabled: true
-        },
-        zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-    },
-    scales: {
-        x: {
-          type: 'time',
-          display: true,
-          title: {
-            display: true,
-            text: 'Date'
-          },
-          ticks: {
-            autoSkip: false,
-            maxRotation: 0,
-            major: {
-              enabled: true
+    // Chart defaults configuration
+    Chart.defaults.set({
+        font: { size: 10 },
+        animation: { duration: 500 },
+        elements: {
+            line: {
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(0,0,0,0.9)',
+                borderWidth: 2,
             },
-            // color: function(context) {
-            //   return context.tick && context.tick.major ? '#FF0000' : 'rgba(0,0,0,0.1)';
-            // },
-            font: function(context) {
-              if (context.tick && context.tick.major) {
-                return {
-                  weight: 'bold',
-                };
-              }
+        },
+    });
+
+    // Utility functions
+    const utils = {
+        throttle(func, limit) {
+            let inThrottle;
+            return function (...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        },
+
+        createDefaultDataset() {
+            return {
+                label: '',
+                data: [],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+                fill: false,
+                pointRadius: 0,
+            };
+        },
+
+        formatTimestamp(date) {
+            return new Date(date).toLocaleString();
+        }
+    };
+
+    // Chart configuration and options
+    const chartOptions = {
+        responsive: true,
+        animation: false,
+        interaction: { mode: 'nearest' },
+        scales: {
+            x: {
+                type: 'time',
+                display: true,
+                title: { display: true, text: 'Date' },
+                ticks: {
+                    autoSkip: false,
+                    maxRotation: 0,
+                    major: { enabled: true },
+                    font: context => context.tick?.major ? { weight: 'bold' } : undefined
+                }
+            },
+            y: {
+                display: true,
+                title: { display: true, text: 'value' }
             }
-          }
         },
-        y: {
-          display: true,
-          title: {
-            display: true,
-            text: 'value'
-          }
+        plugins: {
+            legend: { display: true },
+            tooltip: { enabled: true },
+            zoom: {
+                pan: {
+                    enabled: true,
+                    mode: 'xy',
+                    modifierKey: 'ctrl'
+                },
+                zoom: {
+                    mode: 'xy',
+                    wheel: { enabled: true },
+                    drag: {
+                        enabled: true,
+                        backgroundColor: 'rgba(225,225,225,0.5)'
+                    }
+                }
+            }
         }
-      }
-};
+    };
 
-var createChart = function (ctx, dataset) {
-    return new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: dataset,
-        },
-        options: defaultOptions,
-    });
-};
+    // Chart configurations with display names
+    const CHART_CONFIGS = {
+        cpu: { id: 'cpu', keyName: 'CPU Usage', value: 'cpu' },
+        mem: { id: 'mem', keyName: 'Memory Usage', value: 'memory' },
+        load: { id: 'load', keyName: 'Load Average', value: 'load' },
+        heap: { id: 'heap', keyName: 'Heap Usage', value: 'heap' },
+        eventLoop: { id: 'eventLoop', keyName: 'Event Loop', value: 'loop' },
+        responseTime: { id: 'responseTime', keyName: 'Response Time', value: 'mean' },
+        rps: { id: 'rps', keyName: 'Requests/Second', value: 'count' },
+        statusCodes: { id: 'statusCodes', keyName: 'Status Codes', datasets: 4 }
+    };
 
-var addTimestamp = function (point) {
-    return point.timestamp;
-};
-var heightRatio = 1.5;
+    class ChartManager {
+        constructor(containerId = 'container') {
+            this.container = document.getElementById(containerId);
+            this.charts = new Map();
+            this.spans = [];
+            this.defaultSpan = 0;
 
-var cpuDataset = [Object.create(defaultDataset)];
-var memDataset = [Object.create(defaultDataset)];
-var loadDataset = [Object.create(defaultDataset)];
-var heapDataset = [Object.create(defaultDataset)];
-var eventLoopDataset = [Object.create(defaultDataset)];
-var responseTimeDataset = [Object.create(defaultDataset)];
-var rpsDataset = [Object.create(defaultDataset)];
-
-var cpuStat = document.getElementById('cpuStat');
-var memStat = document.getElementById('memStat');
-var loadStat = document.getElementById('loadStat');
-var heapStat = document.getElementById('heapStat');
-var eventLoopStat = document.getElementById('eventLoopStat');
-var responseTimeStat = document.getElementById('responseTimeStat');
-var rpsStat = document.getElementById('rpsStat');
-
-var cpuChartCtx = document.getElementById('cpuChart');
-cpuChartCtx.height = cpuChartCtx.width * heightRatio;
-var memChartCtx = document.getElementById('memChart');
-memChartCtx.height = memChartCtx.width * heightRatio;
-var loadChartCtx = document.getElementById('loadChart');
-loadChartCtx.height = loadChartCtx.width * heightRatio;
-var heapChartCtx = document.getElementById('heapChart');
-heapChartCtx.height = heapChartCtx.width * heightRatio;
-var eventLoopChartCtx = document.getElementById('eventLoopChart');
-eventLoopChartCtx.height = eventLoopChartCtx.width * heightRatio;
-var responseTimeChartCtx = document.getElementById('responseTimeChart');
-responseTimeChartCtx.height = responseTimeChartCtx.width * heightRatio;
-var rpsChartCtx = document.getElementById('rpsChart');
-rpsChartCtx.height = rpsChartCtx.width * heightRatio;
-var statusCodesChartCtx = document.getElementById('statusCodesChart');
-statusCodesChartCtx.height = statusCodesChartCtx.width * heightRatio;
-
-var cpuChart = createChart(cpuChartCtx, cpuDataset);
-var memChart = createChart(memChartCtx, memDataset);
-var heapChart = createChart(heapChartCtx, heapDataset);
-var eventLoopChart = createChart(eventLoopChartCtx, eventLoopDataset);
-var loadChart = createChart(loadChartCtx, loadDataset);
-var responseTimeChart = createChart(responseTimeChartCtx, responseTimeDataset);
-var rpsChart = createChart(rpsChartCtx, rpsDataset);
-var statusCodesChart = new Chart(statusCodesChartCtx, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [
-            Object.create(defaultDataset),
-            Object.create(defaultDataset),
-            Object.create(defaultDataset),
-            Object.create(defaultDataset),
-        ],
-    },
-    options: defaultOptions,
-});
-
-statusCodesChart.data.datasets.forEach(function (dataset, index) {
-    dataset.borderColor = statusCodesColors[index];
-});
-
-var charts = [
-    cpuChart,
-    memChart,
-    loadChart,
-    responseTimeChart,
-    rpsChart,
-    statusCodesChart,
-    heapChart,
-    eventLoopChart,
-];
-
-var onSpanChange = function (e) {
-    e.target.classList.add('active');
-    defaultSpan = parseInt(e.target.id, 10);
-
-    var otherSpans = document.getElementsByTagName('button');
-
-    for (var i = 0; i < otherSpans.length; i++) {
-        if (otherSpans[i] !== e.target) otherSpans[i].classList.remove('active');
-    }
-
-    socket.emit('esm_change');
-};
-
-
-socket.on('esm_start', function (data) {
-
-    document.getElementById("currenttime").textContent = new Date().toLocaleString();
-    // Remove last element of Array because it contains malformed responses data.
-    // To keep consistency we also remove os data.
-    data[defaultSpan].responses.pop();
-    data[defaultSpan].os.pop();
-
-    var lastOsMetric = data[defaultSpan].os[data[defaultSpan].os.length - 1];
-
-    cpuStat.textContent = '0.0%';
-    if (lastOsMetric) {
-        cpuStat.textContent = lastOsMetric.cpu.toFixed(1) + '%';
-    }
-
-    cpuChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
-        return point.cpu;
-    });
-    cpuChart.data.labels = data[defaultSpan].os.map(addTimestamp);
-    cpuChart.data.datasets[0].label = "CPU Usage";
-
-    memStat.textContent = '0.0MB';
-    if (lastOsMetric) {
-        memStat.textContent = lastOsMetric.memory.toFixed(1) + 'MB';
-    }
-
-    memChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
-        return point.memory;
-    });
-    memChart.data.labels = data[defaultSpan].os.map(addTimestamp);
-    memChart.data.datasets[0].label = "Memory Usage";
-
-    loadStat.textContent = '0.00';
-    if (lastOsMetric) {
-        loadStat.textContent = lastOsMetric.load[defaultSpan].toFixed(2);
-    }
-
-    loadChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
-        return point.load[0];
-    });
-    loadChart.data.labels = data[defaultSpan].os.map(addTimestamp);
-    loadChart.data.datasets[0].label = "One Minute Load Avg";
-
-    heapChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
-        return point.heap.used_heap_size / 1024 / 1024;
-    });
-    heapChart.data.labels = data[defaultSpan].os.map(addTimestamp);
-    heapChart.data.datasets[0].label = "Heap Usage";
-
-    eventLoopChart.data.datasets[0].data = data[defaultSpan].os.map(function (point) {
-        if (point.loop) {
-            return point.loop.sum;
+            this.createChartContainers();
+            this.setupSocket();
+            this.initializeCharts();
+            this.setupEventListeners();
         }
-        return 0;
-    });
-    eventLoopChart.data.labels = data[defaultSpan].os.map(addTimestamp);
-    eventLoopChart.data.datasets[0].label = "Spent in Event Loop";
 
-    var lastResponseMetric = data[defaultSpan].responses[data[defaultSpan].responses.length - 1];
+        createChartContainers() {
+            const fragment = document.createDocumentFragment();
 
-    responseTimeStat.textContent = '0.00ms';
-    if (lastResponseMetric) {
-        responseTimeStat.textContent = lastResponseMetric.mean.toFixed(2) + 'ms';
-    }
-
-    responseTimeChart.data.datasets[0].data = data[defaultSpan].responses.map(function (point) {
-        return point.mean;
-    });
-    responseTimeChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
-    responseTimeChart.data.datasets[0].label = "Response Time"
-
-    for (var i = 0; i < 4; i++) {
-        statusCodesChart.data.datasets[i].data = data[defaultSpan].responses.map(function (point) {
-            return point[i + 2];
-        });
-        statusCodesChart.data.datasets[i].label = (i + 2) + "xx";
-    }
-    statusCodesChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
-
-    if (data[defaultSpan].responses.length >= 2) {
-        var deltaTime =
-            lastResponseMetric.timestamp -
-            data[defaultSpan].responses[data[defaultSpan].responses.length - 2].timestamp;
-
-        if (deltaTime < 1) deltaTime = 1000;
-        rpsStat.textContent = ((lastResponseMetric.count / deltaTime) * 1000).toFixed(2);
-        rpsChart.data.datasets[0].data = data[defaultSpan].responses.map(function (point) {
-            return (point.count / deltaTime) * 1000;
-        });
-        rpsChart.data.labels = data[defaultSpan].responses.map(addTimestamp);
-        rpsChart.data.datasets[0].label = "Requests per Second"
-    }
-
-    charts.forEach(function (ch) {
-        ch.update();
-    });
-
-    var spanControls = document.getElementById('span-controls');
-
-    if (data.length !== spans.length) {
-        data.forEach(function (span, index) {
-            spans.push({
-                retention: span.retention,
-                interval: span.interval,
+            Object.values(CHART_CONFIGS).forEach(config => {
+                const block = document.createElement('div');
+                block.classList.add(...CONFIG.COMMON_CLASSES);
+                Object.assign(block, {
+                    id: `${config.id}Block`,
+                    style: 'width: auto; height: auto; transform: translate(0px, 0px)'
+                });
+                block.dataset.x = '0';
+                block.dataset.y = '0';
+                block.innerHTML = this.createBlockHTML(config);
+                fragment.appendChild(block);
             });
 
-            var spanNode = document.createElement('button');
-            var textNode = document.createTextNode((span.retention * span.interval) / 60 + 'M'); // eslint-disable-line
-
-            spanNode.appendChild(textNode);
-            spanNode.setAttribute('id', index);
-            spanNode.onclick = onSpanChange;
-            spanControls.appendChild(spanNode);
-        });
-        document.getElementsByTagName('button')[0].classList.add('active');
-    }
-});
-
-socket.on('esm_stats', function (data) {
-
-    document.getElementById("currenttime").textContent = new Date().toLocaleString();
-
-    if (
-        data.retention === spans[defaultSpan].retention &&
-        data.interval === spans[defaultSpan].interval
-    ) {
-        var os = data.os;
-        var responses = data.responses;
-
-        cpuStat.textContent = '0.0%';
-        if (os) {
-            cpuStat.textContent = os.cpu.toFixed(1) + '%';
-            cpuChart.data.datasets[0].data.push(os.cpu);
-            cpuChart.data.labels.push(os.timestamp);
+            this.container.appendChild(fragment);
         }
 
-        memStat.textContent = '0.0MB';
-        if (os) {
-            memStat.textContent = os.memory.toFixed(1) + 'MB';
-            memChart.data.datasets[0].data.push(os.memory);
-            memChart.data.labels.push(os.timestamp);
+        createBlockHTML({ id, keyName }) {
+            return `
+            <div class="titlebar bg-gray-50 dark:bg-slate-700 flex items-center justify-between p-3 cursor-move">
+                <div class="window-controls flex gap-2 ml-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="key-name font-medium text-lg">${keyName}</span>
+                    <span class="value font-bold text-3xl" id="${id}Stat">--</span>
+                </div>
+                <div class="w-16"></div>
+            </div>
+            <div class="p-3">
+                <div class="block-content centered-content">
+                    <canvas class="responsive-canvas" id="${id}Chart"></canvas>
+                </div>
+            </div>`;
         }
 
-        loadStat.textContent = '0';
-        if (os) {
-            loadStat.textContent = os.load[0].toFixed(2);
-            loadChart.data.datasets[0].data.push(os.load[0]);
-            loadChart.data.labels.push(os.timestamp);
+        // Make blocks draggable
+        setupDraggable() {
+            Object.values(CHART_CONFIGS).forEach(config => {
+                const block = document.getElementById(`${config.id}Block`);
+                const titlebar = block.querySelector('.titlebar');
+
+                let isDragging = false;
+                let currentX;
+                let currentY;
+                let initialX;
+                let initialY;
+                let xOffset = parseInt(block.dataset.x) || 0;
+                let yOffset = parseInt(block.dataset.y) || 0;
+
+                const dragStart = (e) => {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+
+                    if (e.target === titlebar) {
+                        isDragging = true;
+                    }
+                };
+
+                const dragEnd = () => {
+                    isDragging = false;
+                    block.dataset.x = xOffset;
+                    block.dataset.y = yOffset;
+                };
+
+                const drag = (e) => {
+                    if (isDragging) {
+                        e.preventDefault();
+
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+
+                        xOffset = currentX;
+                        yOffset = currentY;
+
+                        block.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                    }
+                };
+
+                titlebar.addEventListener('mousedown', dragStart);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', dragEnd);
+            });
         }
 
-        heapStat.textContent = '0';
-        if (os) {
-            heapStat.textContent = (os.heap.used_heap_size / 1024 / 1024).toFixed(1) + 'MB';
-            heapChart.data.datasets[0].data.push(os.heap.used_heap_size / 1024 / 1024);
-            heapChart.data.labels.push(os.timestamp);
+        setupSocket() {
+            this.socket = io(`${location.protocol}//${location.hostname}:${port || location.port}`, {
+                path: socketPath,
+                transports: ['websocket']
+            });
+
+            this.socket.on('esm_start', this.handleStart.bind(this));
+            this.socket.on('esm_stats', this.handleStats.bind(this));
         }
 
-        eventLoopStat.textContent = '0';
-        if (os && os.loop) {
-            eventLoopStat.textContent = os.loop.sum.toFixed(2) + 'ms';
-            eventLoopChart.data.datasets[0].data.push(os.loop.sum);
-            eventLoopChart.data.labels.push(os.timestamp);
+        createChart(ctx, datasets) {
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets },
+                options: chartOptions,
+            });
+
+            ctx.height = ctx.width * CONFIG.CHART_HEIGHT_RATIO;
+            return chart;
         }
 
-        responseTimeStat.textContent = '0.00ms';
-        if (responses) {
-            responseTimeStat.textContent = responses.mean.toFixed(2) + 'ms';
-            responseTimeChart.data.datasets[0].data.push(responses.mean);
-            responseTimeChart.data.labels.push(responses.timestamp);
-        }
+        initializeCharts() {
+            for (const [id, config] of Object.entries(CHART_CONFIGS)) {
+                const ctx = document.getElementById(`${id}Chart`);
+                const datasets = Array(config.datasets || 1).fill().map(() => utils.createDefaultDataset());
 
-        if (responses) {
-            var deltaTime = responses.timestamp - rpsChart.data.labels[rpsChart.data.labels.length - 1];
+                if (id === 'statusCodes') {
+                    datasets.forEach((dataset, i) => {
+                        dataset.borderColor = CONFIG.STATUS_CODES_COLORS[i];
+                    });
+                }
 
-            if (deltaTime < 1) deltaTime = 1000;
-            rpsStat.textContent = ((responses.count / deltaTime) * 1000).toFixed(2);
-            rpsChart.data.datasets[0].data.push((responses.count / deltaTime) * 1000);
-            rpsChart.data.labels.push(responses.timestamp);
-        }
-
-        if (responses) {
-            for (var i = 0; i < 4; i++) {
-                statusCodesChart.data.datasets[i].data.push(data.responses[i + 2]);
+                this.charts.set(id, {
+                    chart: this.createChart(ctx, datasets),
+                    stat: document.getElementById(`${id}Stat`),
+                    config
+                });
             }
-            statusCodesChart.data.labels.push(data.responses.timestamp);
+
+            // Setup draggable functionality after charts are initialized
+            this.setupDraggable();
         }
 
-        charts.forEach(function (ch) {
-            if (spans[defaultSpan].retention < ch.data.labels.length) {
-                ch.data.datasets.forEach(function (dataset) {
-                    dataset.data.shift();
+        setupEventListeners() {
+            const mainContent = document.getElementById('con_con');
+            const header = document.getElementById('header');
+            const topButton = document.getElementById('topButton');
+            let lastScroll = 0;
+
+            const handleScroll = utils.throttle(() => {
+                const currentScroll = mainContent.scrollTop;
+                header.style.transform = `translateY(${currentScroll <= 0 || currentScroll < lastScroll ? '0' : '-100%'})`;
+
+                if (topButton) {
+                    topButton.classList.toggle('button-visible', currentScroll > 200);
+                    topButton.classList.toggle('button-hidden', currentScroll <= 200);
+                }
+
+                lastScroll = currentScroll;
+            }, CONFIG.SCROLL_THROTTLE);
+
+            mainContent.addEventListener('scroll', handleScroll, { passive: true });
+            topButton?.addEventListener('click', () => {
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        updateChart(chartId, data, timestamp) {
+            const chartData = this.charts.get(chartId);
+            if (!chartData) return;
+
+            const { chart, stat, config } = chartData;
+            const value = this.getValue(data, config.value);
+
+            if (value !== undefined) {
+                if (stat) stat.textContent = this.formatValue(value, chartId);
+                chart.data.datasets[0].data.push(value);
+                chart.data.labels.push(timestamp);
+
+                this.trimChartData(chart);
+            }
+        }
+
+        getValue(data, path) {
+            if (!path) return data;
+            return path.split('.').reduce((obj, key) => obj?.[key], data);
+        }
+
+        formatValue(value, chartId) {
+            const formatters = {
+                cpu: v => v.toFixed(1) + '%',
+                mem: v => v.toFixed(1) + 'MB',
+                load: v => v[0].toFixed(2),
+                heap: v => (v.used_heap_size / 1024 / 1024).toFixed(1) + 'MB',
+                eventLoop: v => v.loop ? v.loop.sum : 0,
+                responseTime: v => v.toFixed(2) + 'ms',
+                rps: v => v.toFixed(2)
+            };
+            return formatters[chartId]?.(value) ?? value.toString();
+        }
+
+        trimChartData(chart) {
+            const retention = this.spans[this.defaultSpan]?.retention;
+            if (retention && chart.data.labels.length > retention) {
+                chart.data.datasets.forEach(dataset => dataset.data.shift());
+                chart.data.labels.shift();
+            }
+        }
+
+        handleStart(data) {
+            document.getElementById('currenttime').textContent = utils.formatTimestamp(Date.now());
+
+            // Remove last incomplete datapoint
+            data[this.defaultSpan].responses.pop();
+            data[this.defaultSpan].os.pop();
+
+            this.updateAllCharts(data[this.defaultSpan]);
+            this.updateSpanControls(data);
+        }
+
+        handleStats(data) {
+            if (data.retention !== this.spans[this.defaultSpan]?.retention ||
+                data.interval !== this.spans[this.defaultSpan]?.interval) return;
+
+            document.getElementById('currenttime').textContent = utils.formatTimestamp(Date.now());
+            this.updateAllCharts(data);
+        }
+
+        updateAllCharts(data) {
+            const timestamp = data.timestamp ?? Date.now();
+
+            if (data.os) {
+                ['cpu', 'mem', 'load', 'heap', 'eventLoop'].forEach(metric => {
+                    this.updateChart(metric, data.os, timestamp);
+                });
+            }
+
+            if (data.responses) {
+                ['responseTime', 'rps'].forEach(metric => {
+                    this.updateChart(metric, data.responses, timestamp);
                 });
 
-                ch.data.labels.shift();
+                // Update status codes
+                const statusChart = this.charts.get('statusCodes').chart;
+                for (let i = 0; i < 4; i++) {
+                    statusChart.data.datasets[i].data.push(data.responses[i + 2]);
+                    statusChart.data.datasets[i].label = `${i + 2}xx`;
+                }
+                statusChart.data.labels.push(timestamp);
+                this.trimChartData(statusChart);
             }
-            ch.update();
-        });
+
+            // Update all charts
+            for (const { chart } of this.charts.values()) {
+                chart.update();
+            }
+        }
+
+        updateSpanControls(data) {
+            const spanControls = document.getElementById('span-controls');
+            if (data.length === this.spans.length) return;
+
+            const fragment = document.createDocumentFragment();
+            this.spans = data.map((span, index) => {
+                const button = document.createElement('button');
+                button.className = 'p-3 w-10 h-10 rounded-lg border border-gray-200 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out flex items-center justify-center font-bold';
+                button.textContent = `${(span.retention * span.interval) / 60}M`;
+                button.id = index;
+                button.onclick = (e) => {
+                    document.querySelectorAll('#span-controls button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    this.defaultSpan = parseInt(e.target.id, 10);
+                    this.socket.emit('esm_change');
+                };
+                fragment.appendChild(button);
+                return { retention: span.retention, interval: span.interval };
+            });
+
+            spanControls.innerHTML = '';
+            spanControls.appendChild(fragment);
+            spanControls.querySelector('button').classList.add('active');
+        }
     }
-});
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
+        new ChartManager();
+    });
+})();

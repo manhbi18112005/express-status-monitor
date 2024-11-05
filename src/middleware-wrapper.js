@@ -18,14 +18,22 @@ const middlewareWrapper = config => {
     }, [])
     .join(' ');
 
+  const getStyleSheets = () => {
+    return fs.readFileSync(path.join(__dirname, '/public/stylesheets/', validatedConfig.theme));
+  };
+
+  const getScript = () => {
+    return fs.readFileSync(path.join(__dirname, `/public/javascripts/app${validatedConfig.optimize ? '.min' : ''}.js`));
+  };
+
   const data = {
     title: validatedConfig.title,
     port: validatedConfig.port,
     socketPath: validatedConfig.socketPath,
     bodyClasses,
-    backgroundImage: validatedConfig.backgroundImage || 'https://cdn.nnsvn.me/botapp/img/bg/bg.jpg',
-    script: fs.readFileSync(path.join(__dirname, '/public/javascripts/app.js')),
-    style: fs.readFileSync(path.join(__dirname, '/public/stylesheets/', validatedConfig.theme))
+    backgroundImage: validatedConfig.backgroundImage,
+    script: getScript(),
+    style: getStyleSheets(),
   };
 
   const htmlTmpl = fs

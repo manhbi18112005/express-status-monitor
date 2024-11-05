@@ -41,10 +41,21 @@ app.use(
 );
 app.use(require('express-favicon-short-circuit'));
 
+// Define allowed status codes
+const ALLOWED_STATUS_CODES = [200, 300, 400, 500];
+
 // Example route throwing requested status code
-app.get('/return-status/:statusCode', (req, res) =>
-  res.sendStatus(req.params.statusCode),
-);
+app.get('/return-status/:statusCode', (req, res) => {
+  const requestedStatus = parseInt(req.params.statusCode, 10);
+  
+  if (!ALLOWED_STATUS_CODES.includes(requestedStatus)) {
+    return res.status(400).json({
+      error: 'Invalid status code. Allowed codes are: 200, 300, 400, 500'
+    });
+  }
+  
+  return res.sendStatus(requestedStatus);
+});
 
 app.listen(port, () => {
   console.log(`Listening on http://0.0.0.0:${port}`);

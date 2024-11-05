@@ -44,7 +44,12 @@ module.exports = config => {
   config.healthChecks =
     Array.isArray(config.healthChecks)
       ? config.healthChecks
-      : defaultConfig.healthChecks
+      : defaultConfig.healthChecks;
+
+  config.optimize =
+    typeof config.optimize === 'boolean'
+      ? config.optimize
+      : defaultConfig.optimize;
 
   return config;
 };

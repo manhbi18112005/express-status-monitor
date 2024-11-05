@@ -1,4 +1,12 @@
-coverage
-examples
-test
-package-lock.json
+# Ignore node modules
+node_modules/
+examples/node_modules/
+# Ignore build output
+dist/
+build/
+# Ignore coverage reports
+coverage/
+# Ignore any other files/folders
+*.min.js
+*.spec.js
+src/public/javascripts/app.min.js

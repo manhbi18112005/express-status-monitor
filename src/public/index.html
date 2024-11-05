@@ -1,358 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <title>{{title}}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js" integrity="sha512-wUYbRPLV5zs6IqvWd88HIqZU/b8TBx+I8LEioQ/UC0t5EMCLApqhIAnUg7EsAzdbhhdgW07TqYDdH3QEXRcPOQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <style>
-      {{{style}}}
-      
 
-      body {
-        background-image: url({{{backgroundImage}}});
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed
-      }
+<head>
+  <title>{{title}}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>{{{style}}}</style>
+</head>
 
-    </style>
-  </head>
-  <body>
-
-    <div class="body-wrapper">
-      <section class="status">
-        <article>
-          <div class="led green"></div>
-          <h2>All services are online.</h2>
-          <p>As of <span id="currenttime"></span></p>
-          <div id="span-controls" class="span-controls"></div>
-        </article>
-      </section>
-      
-      <section class="info">
-        <article>
-          <div class="service-label">Services</div>
-          <div class="duration-label">Uptime of the past 90 days</div>
-        </article>
-      </section>
-      
-      <section class="stats">
-        <article>
-          <div class="service">API</div>
-          <div class="chart">
-              <div class="bar green" original-title="Dec 3, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 4, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 5, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 6, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 7, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 8, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 9, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 10, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 11, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 12, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 13, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 14, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 15, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 16, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 17, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 18, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 19, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 20, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 21, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 22, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 23, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 24, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 25, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 26, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 27, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 28, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 29, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 30, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Dec 31, 2012&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 1, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 2, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 3, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 4, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 5, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 6, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 7, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 8, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 9, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 10, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 11, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 12, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 13, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 14, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 15, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-            <div class="bar yellow" original-title="Jan 16, 2013&lt;br&gt;<b class='yellow-text'>8m 0s</b>"></div>
-              <div class="bar green" original-title="Jan 17, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 18, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 19, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 20, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 21, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 22, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 23, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 24, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 25, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 26, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 27, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 28, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 29, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 30, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Jan 31, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 1, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 2, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 3, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 4, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 5, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 6, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 7, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 8, 2013&lt;br&gt;N<b class='green-text'>All good :)<b>"></div>
-            <div class="bar yellow" original-title="Feb 9, 2013&lt;br&gt;<b class='yellow-text'>1m 0s</b>"></div>
-              <div class="bar green" original-title="Feb 10, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 11, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 12, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 13, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 14, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 15, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 16, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 17, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 18, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 19, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 20, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 21, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 22, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 23, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 24, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 25, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 26, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 27, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Feb 28, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Mar 1, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Mar 2, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>
-              <div class="bar green" original-title="Mar 3, 2013&lt;br&gt;<b class='green-text'>All good :)<b>"></div>       
+<body class="min-h-screen bg-gray-100 dark:bg-slate-900 overflow-hidden">
+  <div class="flex h-screen w-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="h-full w-64 bg-white dark:bg-slate-800 shadow-lg transition-all duration-300 flex-shrink-0 relative">
+      <!-- Shortcuts Section -->
+      <div class="p-4 pb-16 flex-grow overflow-y-auto"> <!-- Added pb-16 to prevent content overlap with button -->
+        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Shortcuts</h3>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded">
+            <span class="text-gray-600 dark:text-gray-400">Refresh</span>
+            <span class="text-sm bg-gray-200 dark:bg-slate-700 px-2 py-1 rounded">F5</span>
           </div>
-        </article>
-      </section>
-      <section class="legend">
-        <article>
-          <div class="legend-colour green"></div>
-          <p>100% uptime</p>
-          
-          <div class="legend-colour yellow"></div>
-          <p>0 - 10 min downtime</p>
-          
-          <div class="legend-colour red"></div>
-          <p>10+ min downtime</p>
-        </article>
-      </section>
-    </div>
-
-    <div class="body-wrapper">
-      
-      <div class="container">
-        
-      <div class="g-3">
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">CPU Usage <h1 id="cpuStat">- %</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                
-                <div class="chart cpu">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="cpuChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+          <div class="flex justify-between items-center p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded">
+            <span class="text-gray-600 dark:text-gray-400">Settings</span>
+            <span class="text-sm bg-gray-200 dark:bg-slate-700 px-2 py-1 rounded">Ctrl+,</span>
           </div>
         </div>
+      </div>
 
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Memory Usage <h1 id="memStat">- %</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                
-                <div class="chart mem">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="memChart"></canvas>
-                  </div>
-                </div>
+      <!-- Collapse Button -->
+      <button id="sidebarToggle" class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center bg-white dark:bg-slate-800">
+        <i class="ti ti-chevron-left text-gray-600 dark:text-gray-400"></i>
+      </button>
+    </aside>
 
+    <!-- Main Section -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300">
+      <div class="flex-1 overflow-y-auto" id="con_con">
+        <header class="sticky top-0 bg-white dark:bg-slate-800 shadow-md w-full transition-all duration-300 z-50" id="header">
+          <div class="px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between py-4 space-y-4 md:space-y-0">
+              <!-- Left: Logo -->
+              <div class="w-full md:w-1/4 flex justify-center md:justify-start">
+                <span class="text-2xl text-blue-500 font-semibold">Express Monitor</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Heap Usage <h1 id="heapStat">- %</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart heap-size">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="heapChart"></canvas>
-                  </div>
+  
+              <!-- Center: Search -->
+              <div class="w-full md:w-2/4 px-4">
+                <div class="relative flex justify-center">
+                  <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100" id="currenttime">Dashboard</h1>
                 </div>
-
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">One Minute Load Avg <h1 id="loadStat">- %</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart load">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="loadChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Spent in Event Loop <h1 id="eventLoopStat"></h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart eventLoop">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="eventLoopChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Response Time <h1 id="responseTimeStat">ms</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart responseTime">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="responseTimeChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Requests per Second <h1 id="rpsStat">-</h1></h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart rps">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="rpsChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex align-items-stretch mb-3">
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <h5 class="card-title fw-semibold">Status Codes
-                <h6 class="status-code status-code-2xx">2xx</h6>
-                <h6 class="status-code status-code-3xx">3xx</h6>
-                <h6 class="status-code status-code-4xx">4xx</h6>
-                <h6 class="status-code status-code-5xx">5xx</h6>
-              </h5>
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                <div class="chart statusCodes">
-                  <div class="chart-container">
-                    <canvas class="responsive-canvas" id="statusCodesChart"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 d-flex">
-          
-          <div class="card w-100 position-relative overflow-hidden">
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center gap-3 pb-3 border-bottom mb-3">
-                
-                {{#each healthCheckResults}}
-                <button type="button" class="btn btn-primary position-relative">
-                  {{path}}
-                  <span class="position-absolute top-0 start-100 translate-middle p-2 bg-{{bg}} border border-light rounded-circle">
-                    <span class="visually-hidden">{{path}}</span>
-                  </span>
+  
+              <!-- Right: Toolbar -->
+              <div class="w-full md:w-1/4 flex justify-center md:justify-end space-x-4" id="span-controls">
+                <button class="p-3 w-10 h-10 rounded-lg border border-gray-200 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out flex items-center justify-center font-bold">
+                  <i class="ti ti-settings text-gray-600 dark:text-gray-400"></i>
                 </button>
-                {{/each}}
-
               </div>
             </div>
           </div>
-
-        </div>
+        </header>
+        <div id="container" class="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4"></div>
       </div>
-      </div>
-      
-    </div>
-    
-    <!-- <div class="body-wrapper">
-      <section class="twitter">
-        <article>
-          <div class="entypo-twitter"></div>
-          <a href="https://twitter.com/stripestatus" target="_blank">@stripestatus</a>
-        </article>
-      </section>
-      
-      <section class="tweet">
-        <article>
-          <div class="tweet-date">Feb 27 at 9:05AM</div>
-          <p>We're experiencing higher than normal load on our batch infrastructure. Webhooks are about an hour delayed. API calls are not impacted</p>
-          
-          <div class="tweet-date">Feb 23 at 12:20AM</div>
-          <p>Sorry about that! Our systems are showing everything as caught up now. Let us know if you're still seeing problems!</p>
-        </article>
-      </section>
-    </div> -->
+    </main>
+  </div>
 
-    <div class="container">
-      <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <p class="col-md-4 mb-0 text-body-secondary">© 2023 No Name Studio</p>
-    
-        <ul class="nav col-md-4 justify-content-end">
-          
-        </ul>
-      </footer>
-    </div>
+  <button id="topButton"
+    class="fixed bottom-6 right-6 w-12 h-12 p-1 rounded-full bg-gray-800 dark:bg-gray-700 text-white text-bold shadow-lg opacity-0 transition-all duration-300 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 flex items-center justify-center z-50"
+    aria-label="Return to top">
+    <i class="ti ti-arrow-up text-xl"></i>
+  </button>
 
-    <script>      
-      var port = '{{port}}';
-      var socketPath = '{{socketPath}}';
-      {{{script}}}
-    </script>
-  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"
+    integrity="sha256-UDxwmAK+KFxnav4Dab9fcgZtCwwjkpGIwxWPNcAyepw=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"
+    integrity="sha256-TKbdvBbEOMfezGDxb77pY503J3r2CTkPd5TrJymt21U=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-deferred@2.0.0/dist/chartjs-plugin-deferred.min.js"
+    integrity="sha256-2ezT0kaFDGaP+R+ffKtrVGDEytJ824pCNQDafQOQk8A=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+  <script>
+    var port = '{{port}}';
+    var socketPath = '{{socketPath}}';
+    {{{script}}}
+  </script>
+</body>
+
 </html>

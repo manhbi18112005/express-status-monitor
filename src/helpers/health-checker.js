@@ -40,13 +40,13 @@ module.exports = async healthChecks => {
         checkResults.push({
           path: healthChecks[index].path,
           status: 'failed',
-          bg: "danger"
+          bg: 'danger'
         });
       } else {
         checkResults.push({
           path: healthChecks[index].path,
           status: 'ok',
-          bg: "success"
+          bg: 'success'
         });
       }
     });

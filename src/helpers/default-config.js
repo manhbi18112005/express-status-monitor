@@ -1,6 +1,7 @@
 module.exports = {
-  title: 'Express Status',
+  title: 'Express Status Monitor',
   theme: 'default.css',
+  backgroundImage: 'https://cdn.nnsvn.me/botapp/img/bg/bg.jpg',
   path: '/status',
   socketPath: '/socket.io',
   spans: [
@@ -32,4 +33,5 @@ module.exports = {
   },
   ignoreStartsWith: '/admin',
   healthChecks: [],
+  optimize: true,
 };

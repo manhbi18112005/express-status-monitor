@@ -3,9 +3,12 @@
 [![express-status-monitor on npm](https://img.shields.io/npm/v/express-status-monitor-plus.svg)](https://www.npmjs.com/express-status-monitor-plus)
 [![npm](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)
 
-Simple, self-hosted module based on Socket.io and Chart.js to report realtime server metrics for Express-based node servers. Forked and customized by MyT.
+> [!IMPORTANT]
+> Starting with version 2.0.0, **express-status-monitor-plus** will operate as an independent fork of **express-status-monitor**, given that the original project is no longer maintained. This fork will continue to evolve, with direct updates and maintenance applied to the codebase, ensuring a commitment to new features and timely bug fixes. This allows the project to progress without impacting the original repository, providing users with an actively supported monitoring tool.
 
-![Monitoring Page](./thumbnail.gif "Monitoring Page")
+A simple, self-hosted module leveraging Socket.io and Chart.js to provide real-time server metrics for Express-based Node.js servers. This version is forked and customized by **MyT** to deliver enhanced functionality and maintain ongoing support.
+
+![Monitoring Page](./showcases/thumbnail.gif "Monitoring Page")
 
 ## Support for other Node.js frameworks
 
@@ -19,14 +22,12 @@ Simple, self-hosted module based on Socket.io and Chart.js to report realtime se
 `app.use(require('express-status-monitor-plus')());`
 3. Run server and go to `/status`
 
-Note: This plugin works on Node versions > 4.x
+Note: This plugin works on Node versions > 8.x
 
 ## Run examples
 
-1. Go to `cd examples/`
-2. Run `npm i`
-3. Run server `npm start`
-4. Go to `http://0.0.0.0:3000`
+1. Run `npm run dev`
+2. Go to `http://localhost:3000`
 
 ## Options
 
@@ -35,34 +36,41 @@ Monitor can be configured by passing options object into `expressMonitor` constr
 Default config:
 
 ```javascript
-title: 'Express Status',  // Default title
-theme: 'default.css',     // Default styles
+title: 'Express Status Monitor',
+theme: 'default.css',
+backgroundImage: 'https://cdn.nnsvn.me/botapp/img/bg/bg.jpg',
 path: '/status',
-socketPath: '/socket.io', // In case you use a custom path
-websocket: existingSocketIoInstance,
-spans: [{
-  interval: 1,            // Every second
-  retention: 60           // Keep 60 datapoints in memory
-}, {
-  interval: 5,            // Every 5 seconds
-  retention: 60
-}, {
-  interval: 15,           // Every 15 seconds
-  retention: 60
-}],
+socketPath: '/socket.io',
+spans: [
+  {
+    interval: 1,
+    retention: 60,
+  },
+  {
+    interval: 5,
+    retention: 60,
+  },
+  {
+    interval: 15,
+    retention: 60,
+  },
+],
+port: null,
+websocket: null, // pass your own socket.io instance; if not passed, one will be created
+iframe: false, // display standalone page at /status or inside an iframe
 chartVisibility: {
   cpu: true,
   mem: true,
   load: true,
-  eventLoop: true,
   heap: true,
+  eventLoop: true,
   responseTime: true,
   rps: true,
-  statusCodes: true
+  statusCodes: true,
 },
+ignoreStartsWith: '/admin',
 healthChecks: [],
-ignoreStartsWith: '/admin'
-
+optimize: true // this use a minified version of page, but it is harder to debug  
 ```
 
 ## Health Checks
@@ -83,8 +91,6 @@ healthChecks: [{
   port: '3000'
 }]
 ```
-
-![Health Checks](https://i.imgur.com/6tY4OhA.png "Health Checks")
 
 ## Securing endpoint
 
