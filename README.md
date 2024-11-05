@@ -2,6 +2,8 @@
 
 [![express-status-monitor on npm](https://img.shields.io/npm/v/express-status-monitor-plus.svg)](https://www.npmjs.com/express-status-monitor-plus)
 [![npm](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)](https://img.shields.io/npm/dt/express-status-monitor-plus.svg)
+[![Publish express-status-monitor-plus](https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/manhbi18112005/express-status-monitor-plus/actions/workflows/npm-publish.yml)
+[![GitHub license](https://img.shields.io/github/license/manhbi18112005/express-status-monitor-plus.svg)]
 
 > [!IMPORTANT]
 > Starting with version 2.0.0, **express-status-monitor-plus** will operate as an independent fork of **express-status-monitor**, given that the original project is no longer maintained. This fork will continue to evolve, with direct updates and maintenance applied to the codebase, ensuring a commitment to new features and timely bug fixes. This allows the project to progress without impacting the original repository, providing users with an actively supported monitoring tool.
